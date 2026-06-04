@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>пр11</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="практическая-работа-№11-удаление-сообщений-и-счётчик">Практическая работа №11: Удаление сообщений и счётчик</h2>
+<p><strong>Цель:</strong> Добавить в «Гостевую книгу» возможность удалять сообщения и счётчик количества сообщений.</p>
+<h3 id="что-нужно-сделать">Что нужно сделать</h3>
+
+<table>
+<thead>
+<tr>
+<th>Задание</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Добавить в <code>database.py</code> функцию <code>delete_message(message_id)</code></td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Добавить в <code>app.py</code> маршрут <code>/delete/&lt;int:message_id&gt;</code></td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Добавить в <code>index.html</code> кнопку «Удалить» рядом с каждым сообщением</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Добавить подтверждение удаления (JavaScript <code>confirm</code>)</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Добавить в <code>database.py</code> функцию <code>get_message_count()</code></td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>Вывести счётчик сообщений на главную страницу</td>
+</tr>
+</tbody>
+</table><h3 id="задание-1.-добавьте-функцию-удаления-в-database.py">Задание 1. Добавьте функцию удаления в <code>database.py</code></h3>
+<pre class=" language-python"><code class="prism  language-python"><span class="token keyword">def</span> <span class="token function">delete_message</span><span class="token punctuation">(</span>message_id<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""Удаляет сообщение из базы данных по его id."""</span>
+    conn <span class="token operator">=</span> get_db_connection<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    conn<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token string">'DELETE FROM messages WHERE id = ?'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>message_id<span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    conn<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    conn<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<h3 id="задание-2.-добавьте-маршрут-для-удаления-в-app.py">Задание 2. Добавьте маршрут для удаления в <code>app.py</code></h3>
+<pre class=" language-python"><code class="prism  language-python">@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/delete/&lt;int:message_id&gt;'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">delete</span><span class="token punctuation">(</span>message_id<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    delete_message<span class="token punctuation">(</span>message_id<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> redirect<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
+</code></pre>
+<h3 id="задание-3.-добавьте-кнопку-«удалить»-в-index.html">Задание 3. Добавьте кнопку «Удалить» в <code>index.html</code></h3>
+<p>Внутри цикла <code>{% for msg in messages %}</code> добавьте ссылку на удаление:</p>
+<pre class=" language-html"><code class="prism  language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/delete/{{ msg.id }}<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>delete-btn<span class="token punctuation">"</span></span> <span class="token attr-name">onclick</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>return confirm(<span class="token punctuation">'</span>Удалить сообщение?<span class="token punctuation">'</span>)<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Удалить<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p><strong>Полный блок сообщения:</strong></p>
+<pre class=" language-html"><code class="prism  language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>message<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">&gt;</span></span>{{ msg.name }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">&gt;</span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>small</span><span class="token punctuation">&gt;</span></span>({{ msg.created_at }})<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>small</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/delete/{{ msg.id }}<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>delete-btn<span class="token punctuation">"</span></span> <span class="token attr-name">onclick</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>return confirm(<span class="token punctuation">'</span>Удалить сообщение?<span class="token punctuation">'</span>)<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Удалить<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>{{ msg.message }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<h3 id="задание-4.-добавьте-стиль-для-кнопки-удаления-в-style.css">Задание 4. Добавьте стиль для кнопки удаления в <code>style.css</code></h3>
+<pre class=" language-css"><code class="prism  language-css"><span class="token selector"><span class="token class">.delete-btn</span> </span><span class="token punctuation">{</span>
+    <span class="token property">float</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">1.2</span>em<span class="token punctuation">;</span>
+    <span class="token property">margin-left</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector"><span class="token class">.delete-btn</span><span class="token pseudo-class">:hover</span> </span><span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> darkred<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="задание-5.-добавьте-функцию-счётчика-в-database.py">Задание 5. Добавьте функцию счётчика в <code>database.py</code></h3>
+<pre class=" language-python"><code class="prism  language-python"><span class="token keyword">def</span> <span class="token function">get_message_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""Возвращает общее количество сообщений."""</span>
+    conn <span class="token operator">=</span> get_db_connection<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    cursor <span class="token operator">=</span> conn<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token string">'SELECT COUNT(*) FROM messages'</span><span class="token punctuation">)</span>
+    count <span class="token operator">=</span> cursor<span class="token punctuation">.</span>fetchone<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    conn<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> count
+</code></pre>
+<h3 id="задание-6.-выведите-счётчик-в-app.py-и-index.html">Задание 6. Выведите счётчик в <code>app.py</code> и <code>index.html</code></h3>
+<p><strong>В <code>app.py</code> добавьте импорт и передайте счётчик в шаблон:</strong></p>
+<pre class=" language-python"><code class="prism  language-python"><span class="token keyword">from</span> database <span class="token keyword">import</span> init_db<span class="token punctuation">,</span> get_all_messages<span class="token punctuation">,</span> add_message<span class="token punctuation">,</span> delete_message<span class="token punctuation">,</span> get_message_count
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    messages <span class="token operator">=</span> get_all_messages<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    total_count <span class="token operator">=</span> get_message_count<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> render_template<span class="token punctuation">(</span><span class="token string">'index.html'</span><span class="token punctuation">,</span> messages<span class="token operator">=</span>messages<span class="token punctuation">,</span> total_count<span class="token operator">=</span>total_count<span class="token punctuation">)</span>
+</code></pre>
+<p><strong>В <code>index.html</code> добавьте счётчик :</strong></p>
+<pre class=" language-html"><code class="prism  language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>counter<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span> Всего сообщений: {{ total_count }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p><strong>Стиль для счётчика в <code>style.css</code>:</strong></p>
+<pre class=" language-css"><code class="prism  language-css"><span class="token selector"><span class="token class">.counter</span> </span><span class="token punctuation">{</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> <span class="token hexcode">#e9ecef</span><span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">8</span>px<span class="token punctuation">;</span>
+    <span class="token property">border-radius</span><span class="token punctuation">:</span> <span class="token number">5</span>px<span class="token punctuation">;</span>
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">margin-bottom</span><span class="token punctuation">:</span> <span class="token number">20</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="проверка-работоспособности">Проверка работоспособности</h3>
+<ol>
+<li>Запустите приложение: <code>python app.py</code></li>
+<li>Откройте <code>http://127.0.0.1:5000</code></li>
+<li>Добавьте 2–3 сообщения</li>
+<li>Проверьте, что счётчик показывает правильное число</li>
+<li>Нажмите «Удалить» на одном из сообщений</li>
+<li>Подтвердите удаление — сообщение пропало, счётчик уменьшился</li>
+</ol>
+<h3 id="задание-а.-сортировка-по-дате">Задание А. Сортировка по дате</h3>
+<p><strong>Добавьте две ссылки для сортировки сообщений: «Сначала новые» и «Сначала старые».</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Что сделать</th>
+<th>Подсказка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Создать маршрут <code>/sort/newest</code></td>
+<td><code>SELECT * FROM messages ORDER BY created_at DESC</code></td>
+</tr>
+<tr>
+<td>Создать маршрут <code>/sort/oldest</code></td>
+<td><code>SELECT * FROM messages ORDER BY created_at ASC</code></td>
+</tr>
+<tr>
+<td>Добавить ссылки в <code>index.html</code></td>
+<td><code>&lt;a href="/sort/newest"&gt;📅 Сначала новые&lt;/a&gt;</code></td>
+</tr>
+</tbody>
+</table><h3 id="задание-б.-выделение-свежих-сообщений">Задание Б. Выделение свежих сообщений</h3>
+<p><strong>Сообщения, добавленные сегодня, выделить жёлтым фоном.</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Что сделать</th>
+<th>Подсказка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>В цикле по сообщениям сравнить дату сообщения с сегодняшней</td>
+<td>В <code>app.py</code> передать сегодняшнюю дату в шаблон</td>
+</tr>
+<tr>
+<td>Добавить CSS-класс для свежих сообщений</td>
+<td><code>class="fresh"</code></td>
+</tr>
+<tr>
+<td>Установить жёлтый фон</td>
+<td><code>background-color: #fff3cd;</code></td>
+</tr>
+</tbody>
+</table><pre class=" language-python"><code class="prism  language-python"><span class="token comment"># В app.py передаём сегодняшнюю дату</span>
+<span class="token keyword">from</span> datetime <span class="token keyword">import</span> date
+today <span class="token operator">=</span> date<span class="token punctuation">.</span>today<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>isoformat<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">return</span> render_template<span class="token punctuation">(</span><span class="token string">'index.html'</span><span class="token punctuation">,</span> messages<span class="token operator">=</span>messages<span class="token punctuation">,</span> today<span class="token operator">=</span>today<span class="token punctuation">)</span>
+</code></pre>
+<pre class=" language-html"><code class="prism  language-html"><span class="token comment">&lt;!-- В index.html --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>message {% if msg.created_at == today %}fresh{% endif %}<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<h3 id="задание-в.-удаление-всех-сообщений">Задание В. Удаление всех сообщений</h3>
+<p><strong>Добавьте кнопку «Удалить все сообщения». При нажатии открывается страница с подтверждением.</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Что сделать</th>
+<th>Подсказка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Создать маршрут <code>/delete-all</code> (GET)</td>
+<td>Показывает страницу с вопросом «Удалить все сообщения?»</td>
+</tr>
+<tr>
+<td>Создать маршрут <code>/delete-all-confirm</code> (POST)</td>
+<td>Выполняет <code>DELETE FROM messages</code></td>
+</tr>
+<tr>
+<td>Добавить ссылку в <code>index.html</code></td>
+<td><code>&lt;a href="/delete-all"&gt; Удалить все&lt;/a&gt;</code></td>
+</tr>
+</tbody>
+</table><pre class=" language-html"><code class="prism  language-html"><span class="token comment">&lt;!-- delete_all.html --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">&gt;</span></span>Удалить все сообщения?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">method</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>POST<span class="token punctuation">"</span></span> <span class="token attr-name">action</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/delete-all-confirm<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Да, удалить всё<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Отмена<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+</div>
+</body>
+
+</html>
