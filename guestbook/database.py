@@ -60,3 +60,11 @@ def delete_message(message_id):
     conn.execute('DELETE FROM messages WHERE id = ?', (message_id,))
     conn.commit()
     conn.close()
+
+def get_message_count():
+    """Возвращает общее количество сообщений."""
+    conn = get_db_connection()
+    cursor = conn.execute('SELECT COUNT(*) FROM messages')
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count
