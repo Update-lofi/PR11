@@ -102,3 +102,18 @@ button:hover {
     margin-bottom: 20px;
     font-weight: bold;
 }
+
+.sort-links {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.sort-links a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.sort-links a:hover {
+    text-decoration: underline;
+}

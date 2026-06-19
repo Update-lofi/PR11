@@ -68,3 +68,22 @@ def get_message_count():
     count = cursor.fetchone()[0]
     conn.close()
     return count
+
+def get_messages_sorted_newest():
+    """Возвращает сообщения, отсортированные по убыванию (сначала новые)."""
+    conn = get_db_connection()
+    messages = conn.execute(
+        'SELECT * FROM messages ORDER BY created_at DESC'
+    ).fetchall()
+    conn.close()
+    return messages
+
+
+def get_messages_sorted_oldest():
+    """Возвращает сообщения, отсортированные по возрастанию (сначала старые)."""
+    conn = get_db_connection()
+    messages = conn.execute(
+        'SELECT * FROM messages ORDER BY created_at ASC'
+    ).fetchall()
+    conn.close()
+    return messages
