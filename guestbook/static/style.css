@@ -93,3 +93,12 @@ button:hover {
 .delete-btn:hover {
     color: darkred;
 }
+
+.counter {
+    background-color: #e9ecef;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
