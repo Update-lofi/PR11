@@ -6,13 +6,27 @@
 </head>
 <body>
     <div class="container">
-        <h1> Гостевая книга</h1>
+        <h1>Гостевая книга</h1>
+
+        <!-- Счётчик сообщений -->
         <p class="counter">Всего сообщений: {{ total_count }}</p>
+
+        <!-- Ссылки сортировки -->
+        <div class="sort-links">
+            <a href="/sort/newest">Сначала новые</a> |
+            <a href="/sort/oldest">Сначала старые</a>
+        </div>
+
+        <!-- Кнопка удаления всех сообщений -->
+        <div class="delete-all-section">
+            <a href="/delete-all" class="delete-all-link">️ Удалить все сообщения</a>
+        </div>
+
         <h2>Сообщения</h2>
-        
+
         {% if messages %}
         {% for msg in messages %}
-        <div class="message">
+        <div class="message {% if msg.created_at_raw == today %}fresh{% endif %}">
             <strong>{{ msg.name }}</strong> <small>{{ msg.created_at }}</small>
             <a href="/delete/{{ msg.id }}" class="delete-btn" onclick="return confirm('Удалить сообщение?')">Удалить</a>
             <p>{{ msg.message }}</p>
@@ -21,20 +35,16 @@
         {% else %}
             <p>Пока нет сообщений. Будьте первым!</p>
         {% endif %}
-        
+
         <div class="add-form">
             <h2>Оставить сообщение</h2>
-            
+
             <form method="POST" action="/add">
                 <input type="text" name="name" placeholder="Ваше имя" required>
                 <textarea name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
                 <button type="submit">Отправить</button>
             </form>
         </div>
-    </div>
-    <div class="sort-links">
-    <a href="/sort/newest">Сначала новые</a> |
-    <a href="/sort/oldest">Сначала старые</a>
     </div>
 </body>
 </html>
