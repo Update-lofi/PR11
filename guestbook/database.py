@@ -53,3 +53,10 @@ def add_message(name, message):
     
     # Закрываем соединение
     conn.close()
+
+def delete_message(message_id):
+    "Удаляет сообщение из базы данных по его id."
+    conn = get_db_connection()
+    conn.execute('DELETE FROM messages WHERE id = ?', (message_id,))
+    conn.commit()
+    conn.close()
