@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Удалить все сообщения</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Удалить все сообщения?</h1>
+        <p class="warning">Это действие нельзя отменить!</p>
+
+        <form method="POST" action="/delete-all-confirm">
+            <button type="submit" class="btn-delete-all">Да, удалить всё</button>
+        </form>
+
+        <a href="/" class="btn-cancel">Отмена</a>
+    </div>
+</body>
+</html>
