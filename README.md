@@ -10,5 +10,10 @@ cd guestbook
 
 2. Запустить код:
 ```cmd
+pip install flask
+```
+
+3. Запустить код:
+```cmd
 python app.py
 ```
