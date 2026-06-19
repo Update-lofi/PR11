@@ -12,10 +12,11 @@
         
         {% if messages %}
         {% for msg in messages %}
-            <div class="message {% if loop.index0 % 2 == 0 %}message-even{% else %}message-odd{% endif %}">
-                <strong>{{ msg.name }}</strong> <small>({{ msg.created_at }})</small>
-                <p>{{ msg.message }}</p>
-            </div>
+        <div class="message">
+            <strong>{{ msg.name }}</strong> <small>{{ msg.created_at }}</small>
+            <a href="/delete/{{ msg.id }}" class="delete-btn" onclick="return confirm('Удалить сообщение?')">Удалить</a>
+            <p>{{ msg.message }}</p>
+        </div>
         {% endfor %}
         {% else %}
             <p>Пока нет сообщений. Будьте первым!</p>
