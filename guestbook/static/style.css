@@ -81,3 +81,15 @@ button:hover {
     background-color: #a5a5a5; /* Светло-серый фон */
     border-radius: 5px; /* Небольшое скругление для красоты */
 }
+
+.delete-btn {
+    float: right;
+    color: red;
+    text-decoration: none;
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.delete-btn:hover {
+    color: darkred;
+}
