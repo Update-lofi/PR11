@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from database import init_db, get_all_messages, add_message
+from database import init_db, get_all_messages, add_message, delete_message
 
 # Словарь для преобразования номера месяца в название на русском
 MONTHS_RU = {
@@ -49,6 +49,10 @@ def add():
     # Перенаправляем на главную страницу
     return redirect('/')
 
+@app.route('/delete/<int:message_id>')
+def delete(message_id):
+    delete_message(message_id)
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)
